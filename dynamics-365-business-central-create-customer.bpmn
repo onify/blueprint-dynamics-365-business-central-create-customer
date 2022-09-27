@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0sdny8d" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.2.0">
+  <bpmn:process id="dynamics-365-business-central-create-customer" name="Onify Blueprint: Create customer in Dynamics 365 Business Central" isExecutable="true">
+    <bpmn:startEvent id="start" name="Create custromer">
+      <bpmn:outgoing>Flow_0wk332j</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="end" name="Customer created">
+      <bpmn:incoming>Flow_07nd58u</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="generateAccessToken" name="Generate Azure access token">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="form">
+              <camunda:map>
+                <camunda:entry key="client_id">${environment.output.azureCredentials.client_id}</camunda:entry>
+                <camunda:entry key="scope">https://api.businesscentral.dynamics.com/.default</camunda:entry>
+                <camunda:entry key="client_secret">${environment.output.azureCredentials.client_secret}</camunda:entry>
+                <camunda:entry key="grant_type">client_credentials</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="responseType">json</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/x-www-form-urlencoded</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="url">https://login.microsoftonline.com/${environment.output.azureCredentials.tenant}/oauth2/v2.0/token</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>httpRequest</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="accessToken">${content.output.body.access_token}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0gaktxo</bpmn:incoming>
+      <bpmn:outgoing>Flow_0t7vdw4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0wk332j" sourceRef="start" targetRef="getAzureCredentials" />
+    <bpmn:sequenceFlow id="Flow_0t7vdw4" sourceRef="generateAccessToken" targetRef="createCustomer" />
+    <bpmn:serviceTask id="getAzureCredentials" name="Get Azure credentials">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">/my/config/settings/_azure_credentials</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>onifyApiRequest</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="azureCredentials">${content.output.body.value}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0wk332j</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gaktxo</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0gaktxo" sourceRef="getAzureCredentials" targetRef="generateAccessToken" />
+    <bpmn:serviceTask id="createCustomer" name="Create customer">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="responseType">json</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">Bearer ${environment.output.accessToken}</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="url">https://api.businesscentral.dynamics.com/v2.0/production/api/v2.0/companies(dd1c0efb-a627-ed11-9dba-000d3a2988dc)/customers</camunda:inputParameter>
+            <camunda:inputParameter name="throwHttpErrors">${false}</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="json">
+              <camunda:map>
+                <camunda:entry key="displayName">Onify AB</camunda:entry>
+                <camunda:entry key="type">Company</camunda:entry>
+                <camunda:entry key="addressLine1">Box 1092</camunda:entry>
+                <camunda:entry key="city">Stockholm</camunda:entry>
+                <camunda:entry key="country">SE</camunda:entry>
+                <camunda:entry key="postalCode">11674</camunda:entry>
+                <camunda:entry key="email">hello@onify.co</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="body">${body}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>httpRequest</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="debugLog">
+            <camunda:script scriptFormat="js">console.log(content.output.body);
+next();</camunda:script>
+          </camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0t7vdw4</bpmn:incoming>
+      <bpmn:outgoing>Flow_07nd58u</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_07nd58u" sourceRef="createCustomer" targetRef="end" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="dynamics-365-business-central-create-customer">
+      <bpmndi:BPMNEdge id="Flow_07nd58u_di" bpmnElement="Flow_07nd58u">
+        <di:waypoint x="730" y="117" />
+        <di:waypoint x="792" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gaktxo_di" bpmnElement="Flow_0gaktxo">
+        <di:waypoint x="380" y="117" />
+        <di:waypoint x="456" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0t7vdw4_di" bpmnElement="Flow_0t7vdw4">
+        <di:waypoint x="556" y="117" />
+        <di:waypoint x="630" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wk332j_di" bpmnElement="Flow_0wk332j">
+        <di:waypoint x="188" y="117" />
+        <di:waypoint x="280" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="start">
+        <dc:Bounds x="152" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="127" y="142" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_10fxhsy_di" bpmnElement="end">
+        <dc:Bounds x="792" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="766" y="142" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mbrrq0_di" bpmnElement="generateAccessToken">
+        <dc:Bounds x="456" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02vz536_di" bpmnElement="getAzureCredentials">
+        <dc:Bounds x="280" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0l754w1" bpmnElement="createCustomer">
+        <dc:Bounds x="630" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
