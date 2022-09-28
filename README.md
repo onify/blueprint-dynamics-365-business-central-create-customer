@@ -30,6 +30,7 @@ In this Blueprint we show how to create a new customer via Flow.
 3. Grant consent
 
 > See detailed instructions here: https://www.kauffmann.nl/2021/07/06/service-to-service-authentication-in-business-central-18-3-how-to-set-up/
+
 > See also: https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/administration/automation-apis-using-s2s-authentication
 
 ### Onify
