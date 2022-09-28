@@ -1,0 +1,39 @@
+{
+  "name": "@onify/blueprint-dynamics-365-business-central-create-customer",
+  "version": "0.0.1",
+  "description": "Onify Blueprint: Create customer in Dynamics 365 Business Central",
+  "scripts": {
+    "test": "mocha",
+    "posttest": "eslint . --cache"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onify/blueprint-dynamics-365-business-central-create-customer.git"
+  },
+  "keywords": [
+    "onify",
+    "blueprint",
+    "dynamics365",
+    "microsoft",
+    "bpmn"
+  ],
+  "author": {
+    "name": "Onify",
+    "url": "https://github.com/onify"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/onify/blueprint-dynamics-365-business-central-create-customer/issues"
+  },
+  "homepage": "https://github.com/onify/blueprint-dynamics-365-business-central-create-customer#readme",
+  "devDependencies": {
+    "@onify/flow-validator": "^0.0.2",
+    "chai": "^4.3.4",
+    "cron": "^1.8.2",
+    "eslint": "^8.2.0",
+    "mocha": "^9.1.3"
+  },
+  "files": [
+    "blueprint-dynamics-365-business-central-create-customer.bpmn"
+  ]
+}
