@@ -60,8 +60,9 @@ _Replace `<TENANT>`, `<CLIENTID>` and `<CLIENTSECRET>` with correct values._
 ## Test
 
 1. Open the BPMN diagram in Camunda Modeler.
-2. Deploy the BPMN diagram (click `Deploy current diagram` and follow the steps).
-3. Run it (click `Start current diagram`).
+2. Update company id in `url` script (Create customers task)
+3. Deploy the BPMN diagram (click `Deploy current diagram` and follow the steps).
+4. Run it (click `Start current diagram`).
 
 ## Support
 
