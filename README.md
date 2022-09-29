@@ -72,3 +72,7 @@ _Replace `<TENANT>`, `<CLIENTID>` and `<CLIENTSECRET>` with correct values._
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Thanks
+
+Thanks [Tony Aronsson](https://github.com/Aronsson84) @ [Zitac](https://github.com/zitacconsulting) for the support.
